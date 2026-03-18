@@ -10,6 +10,9 @@ async function main() {
   const contract_address = await dao_voting_system.getAddress();
 
   console.log("DAO Voting System deployed to:", contract_address);
+  console.log(
+    `Set dao-voting-frontend/.env.local -> VITE_DAO_CONTRACT_ADDRESS=${contract_address}`,
+  );
 }
 
 main().catch((error) => {

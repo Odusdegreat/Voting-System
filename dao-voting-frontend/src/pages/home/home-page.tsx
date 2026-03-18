@@ -24,7 +24,9 @@ export default function HomePage() {
     owner_address,
     proposal_count,
     proposals,
+    network_name,
     error_message,
+    initialize_wallet,
     connect_wallet,
     load_dao_data,
     create_proposal,
@@ -34,10 +36,28 @@ export default function HomePage() {
   } = use_dao_store();
 
   useEffect(() => {
-    if (is_connected) {
-      void load_dao_data();
+    void initialize_wallet();
+  }, [initialize_wallet]);
+
+  useEffect(() => {
+    const ethereum = window.ethereum;
+
+    if (!ethereum?.on || !ethereum.removeListener) {
+      return;
     }
-  }, [is_connected, load_dao_data]);
+
+    const sync_wallet_state = () => {
+      void initialize_wallet();
+    };
+
+    ethereum.on("accountsChanged", sync_wallet_state);
+    ethereum.on("chainChanged", sync_wallet_state);
+
+    return () => {
+      ethereum.removeListener?.("accountsChanged", sync_wallet_state);
+      ethereum.removeListener?.("chainChanged", sync_wallet_state);
+    };
+  }, [initialize_wallet]);
 
   useEffect(() => {
     const update_current_unix = () => {
@@ -75,6 +95,7 @@ export default function HomePage() {
           wallet_address={wallet_address}
           is_connected={is_connected}
           is_loading={is_loading}
+          network_name={network_name}
           on_connect={() => void connect_wallet()}
         />
 
@@ -83,7 +104,11 @@ export default function HomePage() {
             message={error_message}
             on_retry={() => {
               clear_error();
-              void load_dao_data();
+              if (is_connected) {
+                void load_dao_data();
+              } else {
+                void initialize_wallet();
+              }
             }}
           />
         ) : null}
@@ -136,6 +161,8 @@ export default function HomePage() {
             <ProposalGrid
               current_unix={current_unix}
               proposals={proposals}
+              is_connected={is_connected}
+              is_member={is_member}
               is_submitting={is_submitting}
               on_vote_yes={async (proposal_id) => {
                 await vote_on_proposal(proposal_id, 1);

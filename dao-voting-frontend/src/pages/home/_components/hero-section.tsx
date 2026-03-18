@@ -8,6 +8,7 @@ type HeroSectionProps = {
   wallet_address: string;
   is_connected: boolean;
   is_loading: boolean;
+  network_name: string;
   on_connect: () => void;
 };
 
@@ -15,6 +16,7 @@ export default function HeroSection({
   wallet_address,
   is_connected,
   is_loading,
+  network_name,
   on_connect,
 }: HeroSectionProps) {
   return (
@@ -38,7 +40,7 @@ export default function HeroSection({
 
             <p className="mt-4 max-w-2xl text-base leading-7 text-white/68 sm:text-lg">
               Connect your wallet, create proposals, vote smoothly, and execute
-              decisions after deadlines — all from one polished dashboard.
+              decisions after deadlines, all from one polished dashboard.
             </p>
 
             <div className="mt-6 flex flex-wrap items-center gap-3">
@@ -51,7 +53,9 @@ export default function HeroSection({
               )}
 
               <div className="rounded-full border border-white/10 bg-white/6 px-4 py-2 text-sm text-white/65">
-                Works with MetaMask on localhost
+                {network_name
+                  ? `Connected network: ${network_name}`
+                  : "Works with MetaMask on your configured testnet"}
               </div>
             </div>
           </motion.div>

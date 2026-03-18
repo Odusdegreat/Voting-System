@@ -6,6 +6,8 @@ import ProposalCard from "./proposal-card";
 type ProposalGridProps = {
   current_unix: number;
   proposals: Proposal[];
+  is_connected: boolean;
+  is_member: boolean;
   is_submitting: boolean;
   on_vote_yes: (proposal_id: number) => Promise<void>;
   on_vote_no: (proposal_id: number) => Promise<void>;
@@ -15,6 +17,8 @@ type ProposalGridProps = {
 export default function ProposalGrid({
   current_unix,
   proposals,
+  is_connected,
+  is_member,
   is_submitting,
   on_vote_yes,
   on_vote_no,
@@ -31,6 +35,8 @@ export default function ProposalGrid({
           key={proposal.id}
           current_unix={current_unix}
           proposal={proposal}
+          is_connected={is_connected}
+          is_member={is_member}
           is_submitting={is_submitting}
           on_vote_yes={() => on_vote_yes(proposal.id)}
           on_vote_no={() => on_vote_no(proposal.id)}

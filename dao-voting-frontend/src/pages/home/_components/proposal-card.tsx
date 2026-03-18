@@ -12,6 +12,8 @@ import {
 type ProposalCardProps = {
   current_unix: number;
   proposal: Proposal;
+  is_connected: boolean;
+  is_member: boolean;
   is_submitting: boolean;
   on_vote_yes: () => Promise<void>;
   on_vote_no: () => Promise<void>;
@@ -21,6 +23,8 @@ type ProposalCardProps = {
 export default function ProposalCard({
   current_unix,
   proposal,
+  is_connected,
+  is_member,
   is_submitting,
   on_vote_yes,
   on_vote_no,
@@ -99,7 +103,7 @@ export default function ProposalCard({
         <Button
           variant="secondary"
           is_loading={is_submitting}
-          disabled={has_ended || proposal.executed}
+          disabled={!is_connected || !is_member || has_ended || proposal.executed}
           onClick={on_vote_yes}
         >
           Vote Yes
@@ -108,7 +112,7 @@ export default function ProposalCard({
         <Button
           variant="secondary"
           is_loading={is_submitting}
-          disabled={has_ended || proposal.executed}
+          disabled={!is_connected || !is_member || has_ended || proposal.executed}
           onClick={on_vote_no}
         >
           Vote No
@@ -117,7 +121,7 @@ export default function ProposalCard({
         <Button
           variant="primary"
           is_loading={is_submitting}
-          disabled={!has_ended || proposal.executed}
+          disabled={!is_connected || !has_ended || proposal.executed}
           onClick={on_execute}
         >
           Execute
